@@ -14,6 +14,7 @@ contract GameTheoryTest is Test {
         uint256 slasherReward,
         uint256 sinkAmount
     );
+    event Withdrawn(address indexed user, uint256 amount);
 
     ProofOfLiveness public pol;
 
@@ -303,5 +304,73 @@ contract GameTheoryTest is Test {
 
         uint256 totalPaid = (slasher.balance - slasherBefore) + (sink.balance - sinkBefore);
         assertEq(totalPaid, stake);
+    }
+
+    // ── Game Theory: Withdraw Scenarios ────────────────────────────────────────
+
+    /// @dev A rational participant who sees an expiring deadline should prefer
+    ///      `withdraw()` over losing 90% to slashing.
+    function test_GameTheory_WithdrawBeforeSlash() public {
+        uint256 aliceBefore = alice.balance;
+
+        vm.prank(alice);
+        pol.join{value: REQUIRED_STAKE}();
+
+        // Alice withdraws before deadline — gets 100% back
+        vm.prank(alice);
+        pol.withdraw();
+
+        assertEq(alice.balance, aliceBefore, "Alice should recover full stake");
+        assertFalse(pol.isActive(alice));
+
+        // Slasher gets nothing
+        vm.prank(slasher);
+        vm.expectRevert(abi.encodeWithSelector(IProofOfLiveness.NoStake.selector, alice));
+        pol.slash(alice);
+    }
+
+    /// @dev A participant who forgets to withdraw (or heartbeat) loses 90% to slashers.
+    ///      This models the economic penalty for inattentiveness.
+    function test_GameTheory_SlashRewardIncentivizesKeepers() public {
+        vm.prank(alice);
+        pol.join{value: REQUIRED_STAKE}();
+
+        vm.warp(block.timestamp + HEARTBEAT_INTERVAL + 1);
+
+        uint256 slasherBefore = slasher.balance;
+
+        vm.prank(slasher);
+        pol.slash(alice);
+
+        uint256 slasherGain = slasher.balance - slasherBefore;
+        assertEq(slasherGain, REQUIRED_STAKE / 10, "Keeper should earn 10% bounty");
+    }
+
+    /// @dev Multiple heartbeats accumulate correctly — active users can survive
+    ///      across many intervals by repeatedly heartbeating.
+    function test_GameTheory_MultipleHeartbeatsKeepAlive() public {
+        vm.prank(alice);
+        pol.join{value: REQUIRED_STAKE}();
+
+        for (uint256 i = 0; i < 5; i++) {
+            vm.warp(block.timestamp + HEARTBEAT_INTERVAL - 1);
+            vm.prank(alice);
+            pol.heartbeat();
+            assertTrue(pol.isActive(alice));
+        }
+
+        // After 5 intervals, still active because she heartbeated each time
+        assertTrue(pol.isActive(alice));
+    }
+
+    function test_WithdrawEmitsEvent() public {
+        vm.prank(alice);
+        pol.join{value: REQUIRED_STAKE}();
+
+        vm.expectEmit(true, false, false, true);
+        emit Withdrawn(alice, REQUIRED_STAKE);
+
+        vm.prank(alice);
+        pol.withdraw();
     }
 }
