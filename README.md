@@ -8,11 +8,14 @@
     <a href="#license"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" /></a>
     <img src="https://img.shields.io/badge/Coverage-100%25-brightgreen?style=for-the-badge" alt="Coverage" />
   </p>
+
+  ### 🔗 Quick Links
+  **[Live Dashboard](https://liveness-vault.vercel.app)** | **[Verified Contract](https://explorer.testnet.rootstock.io/address/0xA51CbD66985DDD1a04858d8bE11bF26BE32f3870?tab=txs)**
 </div>
 
 ---
 
-## 📖 Overview
+## Overview
 
 **Liveness Vault** is a primitive smart contract system built on Rootstock (Bitcoin layer 2) that enforces participant liveness using game theory and cryptoeconomic staking. 
 
@@ -20,7 +23,7 @@ Participants stake a fixed amount of RBTC to join a cohort or pool. To prove the
 
 ---
 
-## ⚡ Core Functionalities
+## Core Functionalities
 
 - **Trustless Liveness Proofs**: No central authority determines if a user is active. The blockchain enforces strict time-based constraints purely dependent on user transactions.
 - **Voluntary Exits**: Active participants can call `withdraw()` at any time to reclaim 100% of their staked RBTC and cleanly exit the protocol.
@@ -29,7 +32,7 @@ Participants stake a fixed amount of RBTC to join a cohort or pool. To prove the
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 This time-based staking primitive serves as a building block for various web3 scenarios:
 
@@ -42,7 +45,7 @@ This time-based staking primitive serves as a building block for various web3 sc
 
 ---
 
-## 🏗 System Architecture
+## System Architecture
 
 The project consists of three independent but fully integrated layers:
 
@@ -98,7 +101,7 @@ A sleek, glassmorphic Next.js App Router workspace utilizing wagmi v3 and viem.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (>= 18)
