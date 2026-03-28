@@ -23,6 +23,30 @@ Participants stake a fixed amount of RBTC to join a cohort or pool. To prove the
 
 ---
 
+## Protocol Rules
+
+The protocol enforces four primary states and transitions:
+
+1.  **Joining**: A user must stake exactly `requiredStake` (e.g., 0.0001 RBTC) to activate their status. Multiple joins from the same address are prohibited while active.
+2.  **Liveness (The Heartbeat)**: Every participant has a deadline equal to `lastHeartbeat + heartbeatInterval`. Calling `heartbeat()` resets this timer.
+3.  **Slashing (Inactivity Penalty)**: If `block.timestamp > lastHeartbeat + heartbeatInterval`, the participant is considered "dead". Any external caller can call `slash()`.
+4.  **Withdrawal (Graceful Exit)**: A participant may reclaim their full stake at any time *only if* they are still active. Once slashed or withdrawn, they can rejoin as a fresh participant.
+
+---
+
+## Design Rationale
+
+### Why Rootstock (RBTC)?
+Liveness Vault leverages Rootstock for its Bitcoin-level security combined with EVM programmability. Using native RBTC ensures participants have "skin in the game" with a high-value asset, making the cost of inactivity tangible.
+
+### The 10/90 Slashing Split
+We chose a 10% bounty reward to the "keeper" (slasher) to create a self-sustaining ecosystem. 10% is large enough to cover gas costs and provide profit, incentivizing bots to monitor the network, while 90% goes to the treasury sink to prevent "self-slashing" (where a user slashes themselves to avoid a full loss) from being a zero-sum game.
+
+### Optimistic Liveness vs. Pushed State
+The protocol is **optimistic**. It doesn't use an on-chain cron job (which doesn't exist in EVM). Instead, it relies on external actors to "prove" inactivity. This minimizes gas costs for active users while offloading the computational burden of monitoring to the keepers.
+
+---
+
 ## Core Functionalities
 
 - **Trustless Liveness Proofs**: No central authority determines if a user is active. The blockchain enforces strict time-based constraints purely dependent on user transactions.
