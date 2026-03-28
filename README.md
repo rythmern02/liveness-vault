@@ -173,4 +173,4 @@ This protocol utilizes an exhaustive, paranoid test-suite ensuring complete logi
 
 ## 📜 License
 
-Distributed under the MIT License. See `LICENSE` for more information. Built for the RootSTOCK (RSK) ecosystem.
+Distributed under the MIT License. See `LICENSE` for more information. Built for the Rootstock (RSK) ecosystem.
