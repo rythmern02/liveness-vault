@@ -1,5 +1,5 @@
+![Rootstock Banner](https://raw.githubusercontent.com/rsksmart/devportal/main/rootstock-logo.png)
 <div align="center">
-  <img src="https://raw.githubusercontent.com/rsksmart/rskj/master/rsk-logo.png" alt="Rootstock Logo" width="120" />
   <h1>Liveness Vault</h1>
   <p><b>A Trustless Proof-of-Liveness Cryptoeconomic Protocol on Rootstock (RSK)</b></p>
   
