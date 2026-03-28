@@ -74,7 +74,7 @@ graph TD
     POL -- "10% Bounty Base" --> Bot
     POL -- "90% Default" --> Sink((DAO Treasury Sink))
 
-    style Rootstock fill:#F58320,stroke:#333,,color:#fff
+    style Rootstock fill:#F58320,stroke:#333,color:#fff
     style POL fill:#fff,stroke:#333
     style Bot fill:#3b82f6,color:#fff
     style UI fill:#10b981,color:#fff
